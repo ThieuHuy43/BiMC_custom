@@ -34,6 +34,7 @@ class DatasetManager:
             self.class_index_in_task.append(np.arange(start, end))
         self.num_tasks = len(self.class_index_in_task)
         self.train_transform, self.test_transform = self._set_transform()
+        print(self.class_index_in_task)
 
 
 
@@ -173,8 +174,10 @@ class DatasetManager:
             else:
                 idx_selected = idx_c
 
-            ret_x.append(x[idx_selected])
-            ret_y.append(y[idx_selected])
+            #ret_x.append(x[idx_selected])
+            #ret_y.append(y[idx_selected])
+            ret_x.append(np.array(x)[idx_selected])
+            ret_y.append(np.array(y)[idx_selected])
         ret_x = np.concatenate(ret_x)
         ret_y = np.concatenate(ret_y)
 
@@ -221,8 +224,26 @@ class TaskDataset(Dataset):
         if self.use_path:
             image = self.transform(pil_loader(self.images[idx]))
         else:
-            image = self.transform(Image.fromarray(self.images[idx]))
+            
+            # image = self.transform(Image.fromarray(self.images[idx]))
+            img = self.images[idx]
+
+            # Nếu ảnh ở dạng (C, H, W), chuyển về (H, W, C)
+            if img.ndim == 3 and img.shape[0] == 3:
+                img = np.transpose(img, (1, 2, 0))  # (224, 224, 3)
+
+            img = img.astype(np.uint8)
+            img = Image.fromarray(img).convert("RGB").resize((224, 224))
+            image = self.transform(img)
+
+
+
+
+
         label = self.labels[idx]
+        #
+        
+
         
         if self.class_to_task_id is not None:
             task_id = self.class_to_task_id[label]
@@ -261,9 +282,11 @@ def get_data_source(root, name):
     from .cifar100 import CIFAR100
     from .miniimagenet import MiniImagenet
     from .cub200 import CUB200
+    from .fruits import Fruits
     source_dict = {
         'cifar100' : CIFAR100,
         'miniimagenet' : MiniImagenet,
         'cub200': CUB200,
+        'fruits': Fruits
     }
     return source_dict[name.lower()](root=root)

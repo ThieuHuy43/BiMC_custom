@@ -77,6 +77,7 @@ class Runner:
     def run(self):
         print(f'Start inferencing on all tasks: [0, {self.data_manager.num_tasks - 1}]')
         state_dict_list = []
+        print("hola", self.data_manager.num_tasks)
         for i in range(self.data_manager.num_tasks):
             self.model.eval()
 

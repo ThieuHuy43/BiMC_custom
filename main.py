@@ -1,4 +1,7 @@
 from yacs.config import CfgNode as CN
+import sys, os
+sys.path.append(os.getcwd())
+
 from utils.util import set_gpu, set_seed
 import argparse
 
@@ -110,7 +113,7 @@ def main():
     from engine.engine import Runner
     engine = Runner(cfg)
     engine.run()
-
-
+    
+    
 if __name__ == '__main__':
     main()

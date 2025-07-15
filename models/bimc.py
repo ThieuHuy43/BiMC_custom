@@ -101,8 +101,11 @@ class BiMC(nn.Module):
         description_embeddings = []
         mean_embeddings = []
         all_targets = []
-        file = open(gpt_path, "r")
-        GPT_prompt_dict = json.load(file)
+        # file = open(gpt_path, "r")
+        # GPT_prompt_dict = json.load(file)
+        with open(gpt_path, "r", encoding="utf-8") as file:
+            GPT_prompt_dict = json.load(file)
+
         # The order of embeddings should follow strictly order of classname variable
         # Keys name should match classnames so that we could do fetching from the dict.
         # Convert the dict to lower case
